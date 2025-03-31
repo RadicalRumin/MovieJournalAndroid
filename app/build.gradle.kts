@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "com.example.moviejournal"
     compileSdk = 35
+    android.buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "com.example.moviejournal"
@@ -17,6 +18,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "TMDB_API_KEY", "\"${properties["TMDB_API_KEY"] ?: ""}\"")
+
     }
 
     buildTypes {
@@ -55,6 +59,8 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.dynamic.features.fragment)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.volley)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

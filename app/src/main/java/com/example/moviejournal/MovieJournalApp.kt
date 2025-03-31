@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.moviejournal.ui.navigation.MovieTabRow
 import com.example.moviejournal.ui.theme.MovieJournalTheme
+import androidx.compose.runtime.getValue
 
 @Composable
 fun MovieJournalApp() {
@@ -17,10 +19,10 @@ fun MovieJournalApp() {
         val currentScreen = movieTabRowScreens.find { it.route == currentDestination?.route } ?: SearchScreen
 
         Scaffold(
-            topBar = {
+            bottomBar = {
                 MovieTabRow(
                     allScreens = movieTabRowScreens,
-                    onTabSelected = { newScreen ->
+                    onTabSelected = { newScreen : MovieJournalDestination ->
                         navController.navigateSingleTopTo(newScreen.route)
                     },
                     currentScreen = currentScreen

@@ -24,7 +24,7 @@ fun MovieJournalNavHost(
         // Search Screen
         composable(route = SearchScreen.route) {
             SearchScreen(
-                onMovieClick = { movieId ->
+                onMovieClick = { movieId : Int ->
                     navController.navigate(MovieDetailScreen.createRoute(movieId))
                 }
             )
@@ -42,15 +42,14 @@ fun MovieJournalNavHost(
         // Movie Detail Screen (with argument)
         composable(
             route = MovieDetailScreen.route,
-            arguments = listOf(navArgument("movieId") { type = NavType.IntType }
+            arguments = listOf(navArgument("movieId") { type = NavType.IntType }),
             ) { backStackEntry ->
-                val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
-                MovieDetailScreen(
-                    movieId = movieId,
-                    onBackClick = { navController.popBackStack() }
-                )
-            }
-        )
+            val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+            MovieDetailScreen(
+                movieId = movieId,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
     }
 }
 

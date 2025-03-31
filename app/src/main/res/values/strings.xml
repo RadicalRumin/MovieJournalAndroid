@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MovieJournal</string>
+    <string name="watchlist">Watchlist</string>
+    <string name="search">Search</string>
 </resources>
