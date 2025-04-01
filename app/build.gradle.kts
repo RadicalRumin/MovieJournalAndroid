@@ -18,9 +18,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "TMDB_API_KEY", "\"${properties["TMDB_API_KEY"] ?: ""}\"")
-
     }
 
     buildTypes {

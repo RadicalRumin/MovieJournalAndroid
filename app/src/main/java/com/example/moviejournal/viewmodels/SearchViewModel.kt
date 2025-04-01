@@ -1,18 +1,52 @@
 package com.example.moviejournal.viewmodels
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.example.moviejournal.ui.screens.SearchScreen
-import com.example.moviejournal.ui.screens.WatchlistScreen
+import androidx.annotation.RequiresPermission
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.moviejournal.data.api.MovieApiService
+import com.example.moviejournal.data.local.Movie
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
-@Composable
-fun AppNavHost(navController: NavHostController){
-    NavHost(navController, startDestination = "watchlist"){
-        composable("watchlist"){ SearchScreen(
-            onMovieClick = TODO()
-        )}
-        composable("detail/{movieId}"){}
+class SearchViewModel(private val apiService: MovieApiService) : ViewModel() {
+    private val _searchResults = MutableStateFlow<List<Movie>>(emptyList())
+    private val _isLoading = MutableStateFlow(false)
+    private val _error = MutableStateFlow<String?>(null)
+
+    val searchResults: StateFlow<List<Movie>> = _searchResults.asStateFlow()
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    val error: StateFlow<String?> = _error.asStateFlow()
+
+    @RequiresPermission(android.Manifest.permission.ACCESS_NETWORK_STATE)
+    fun searchMovies(query: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            try {
+                apiService.searchMovies(
+                    query = query,
+                    onSuccess = { movies ->
+                        _searchResults.value = movies
+                        _isLoading.value = false
+                    },
+                    onError = { errorMessage ->
+                        _error.value = errorMessage
+                        _isLoading.value = false
+                    }
+                )
+            }
+            catch (e: SocketTimeoutException) {
+                _error.value = "Connection timeout"
+            } catch (e: UnknownHostException) {
+                _error.value = "No internet connection"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 }

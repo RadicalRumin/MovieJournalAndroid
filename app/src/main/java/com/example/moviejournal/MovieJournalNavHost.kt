@@ -4,12 +4,15 @@ import com.example.moviejournal.ui.screens.SearchScreen
 import com.example.moviejournal.ui.screens.WatchlistScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.moviejournal.ui.screens.MovieDetailScreen
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.moviejournal.data.api.MovieApiService
+import com.example.moviejournal.viewmodels.SearchViewModel
 
 @Composable
 fun MovieJournalNavHost(
@@ -21,16 +24,16 @@ fun MovieJournalNavHost(
         startDestination = SearchScreen.route,
         modifier = modifier
     ) {
-        // Search Screen
         composable(route = SearchScreen.route) {
+            val searchViewModel = SearchViewModel(MovieApiService(LocalContext.current))
             SearchScreen(
+                viewModel = searchViewModel,
                 onMovieClick = { movieId : Int ->
                     navController.navigate(MovieDetailScreen.createRoute(movieId))
                 }
             )
         }
 
-        // Watchlist Screen
         composable(route = Watchlist.route) {
             WatchlistScreen(
                 onMovieClick = { movieId ->
@@ -39,7 +42,6 @@ fun MovieJournalNavHost(
             )
         }
 
-        // Movie Detail Screen (with argument)
         composable(
             route = MovieDetailScreen.route,
             arguments = listOf(navArgument("movieId") { type = NavType.IntType }),
