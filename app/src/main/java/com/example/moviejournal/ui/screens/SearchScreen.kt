@@ -21,7 +21,7 @@ fun SearchScreen(
     onMovieClick: (Int) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val searchResults by viewModel.searchResults.collectAsState()
+    val searchResults by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 

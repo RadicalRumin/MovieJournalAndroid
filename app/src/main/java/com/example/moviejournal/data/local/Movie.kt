@@ -17,6 +17,8 @@ data class Movie(
     @SerializedName("original_title") val originalTitle : String,
     val popularity : Double,
     val video : Boolean,
+    val rating: Int? = 0,
+    val notes: String? = ""
 ) {
     fun fullPosterPath() = posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
 }

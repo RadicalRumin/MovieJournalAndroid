@@ -48,7 +48,7 @@ fun MovieJournalNavHost(
             ) { backStackEntry ->
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
             MovieDetailScreen(
-                movieId = movieId,
+                movie = movieId,
                 onBackClick = { navController.popBackStack() }
             )
         }
