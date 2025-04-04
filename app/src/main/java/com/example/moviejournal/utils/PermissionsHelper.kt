@@ -2,7 +2,6 @@ package com.example.moviejournal.utils
 
 import android.Manifest
 import android.app.Activity
-import android.os.Build
 import androidx.core.app.ActivityCompat
 
 object MediaPermissionsHelper {
@@ -18,6 +17,4 @@ object MediaPermissionsHelper {
             ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)
         }
     }
-
-
 }

@@ -12,7 +12,6 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.Volley
-import com.example.moviejournal.BuildConfig
 import com.example.moviejournal.data.local.Movie
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -20,7 +19,8 @@ import java.net.URLEncoder
 class MovieApiService(context: Context) {
 
 
-    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
@@ -29,8 +29,10 @@ class MovieApiService(context: Context) {
 
     companion object {
         private const val BASE_URL = "https://api.themoviedb.org/3"
+
         // After careful consideration it was decided that properly securing an API key only used for school assignments is not worth the effort.
-        private const val API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNjk2MzVjZTM3OTY0YmVkN2U2ZWU0YmY0YTE3NTIwZCIsIm5iZiI6MTc0MDA1NjczMy44NjcsInN1YiI6IjY3YjcyODlkMTFmZjAzNDA5ZWMzZmY4ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.9m4t8K2mMMQMdjFe4wDp6Hje1WlVkEZfOXKIn1Q_6WA"
+        private const val API_KEY =
+            "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNjk2MzVjZTM3OTY0YmVkN2U2ZWU0YmY0YTE3NTIwZCIsIm5iZiI6MTc0MDA1NjczMy44NjcsInN1YiI6IjY3YjcyODlkMTFmZjAzNDA5ZWMzZmY4ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.9m4t8K2mMMQMdjFe4wDp6Hje1WlVkEZfOXKIn1Q_6WA"
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)

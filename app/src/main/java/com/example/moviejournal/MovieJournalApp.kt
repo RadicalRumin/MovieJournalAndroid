@@ -38,10 +38,12 @@ fun MovieJournalApp(
         val currentDestination = currentBackStack?.destination
         val currentScreen =
             movieTabRowScreens.find { it.route == currentDestination?.route } ?: SearchScreen
+
         var backgroundUri by remember { mutableStateOf(preferencesManager.backgroundImageUri) }
         LaunchedEffect(preferencesManager.backgroundImageUri) {
             backgroundUri = preferencesManager.backgroundImageUri
         }
+
         Box(modifier = Modifier.fillMaxSize()) {
             // Global background image
             backgroundUri?.let { uri ->
@@ -53,9 +55,8 @@ fun MovieJournalApp(
                 )
             }
 
-            // Main content with semi-transparent scaffold
             Scaffold(
-                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), //Semi transparent to show background image behind
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 bottomBar = {
                     if (currentDestination?.shouldShowBottomBar() != false) {

@@ -55,7 +55,6 @@ fun NetworkImage(
             bitmap = null
 
             val job = ImageLoader.loadImage(
-                context = context,
                 url = url,
                 onSuccess = { image ->
                     bitmap = image
@@ -86,6 +85,7 @@ fun NetworkImage(
                     contentScale = contentScale
                 )
             }
+
             else -> error()
         }
     }

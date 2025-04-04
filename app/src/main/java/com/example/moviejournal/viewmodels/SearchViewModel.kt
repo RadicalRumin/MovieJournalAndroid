@@ -40,9 +40,9 @@ class SearchViewModel(private val apiService: MovieApiService) : ViewModel() {
                     }
                 )
             }
-            catch (e: SocketTimeoutException) {
+            catch (_: SocketTimeoutException) {
                 _error.value = "Connection timeout"
-            } catch (e: UnknownHostException) {
+            } catch (_: UnknownHostException) {
                 _error.value = "No internet connection"
             } finally {
                 _isLoading.value = false

@@ -9,9 +9,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
 import com.example.moviejournal.R
 import com.example.moviejournal.data.local.Movie
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
-
+import kotlinx.serialization.json.Json
 
 
 sealed interface MovieJournalDestination {

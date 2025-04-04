@@ -1,10 +1,10 @@
 package com.example.moviejournal.data.repository
 
 import android.content.Context
+import androidx.core.content.edit
 import com.example.moviejournal.data.local.Movie
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import androidx.core.content.edit
 
 class WatchlistRepository(context: Context) {
     private val sharedPrefs = context.getSharedPreferences("watchlist", Context.MODE_PRIVATE)
@@ -20,7 +20,6 @@ class WatchlistRepository(context: Context) {
                 notes = movie.notes ?: watchlist[existingIndex].notes
             )
         } else {
-            // Add new movie
             watchlist.add(movie)
         }
         saveWatchlist(watchlist)

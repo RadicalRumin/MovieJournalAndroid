@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +39,6 @@ fun MovieCard(
             .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Poster Image (fixed width)
         NetworkImage(
             url = movie.fullPosterPath(),
             contentDescription = "Poster for ${movie.title}",
@@ -49,7 +47,6 @@ fun MovieCard(
                 .aspectRatio(2f / 3f)
         )
 
-        // Movie Details
         Column(
             modifier = Modifier
                 .padding(start = 16.dp)

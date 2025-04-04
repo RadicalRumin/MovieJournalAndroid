@@ -14,26 +14,24 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.URL
-import androidx.core.net.toUri
 
 object ImageLoader {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     fun loadImage(
-        context: Context,
         url: String,
         onSuccess: (Bitmap) -> Unit,
         onError: (Exception) -> Unit = { _ -> }
-    ): Job {  // Now returns the Job
+    ): Job {
         return scope.launch {
             try {
                 val bitmap = withContext(Dispatchers.IO) {
@@ -54,10 +52,6 @@ object ImageLoader {
                 }
             }
         }
-    }
-
-    fun cancelAll() {
-        scope.coroutineContext.cancelChildren()
     }
 }
 

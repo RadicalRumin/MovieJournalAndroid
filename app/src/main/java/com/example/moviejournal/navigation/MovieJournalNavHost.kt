@@ -1,9 +1,6 @@
 package com.example.moviejournal.navigation
 
-import com.example.moviejournal.data.repository.WatchlistRepository
 import android.net.Uri
-import com.example.moviejournal.ui.screens.SearchScreen
-import com.example.moviejournal.ui.screens.WatchlistScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -11,13 +8,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.moviejournal.ui.screens.MovieDetailScreen
 import androidx.navigation.navArgument
-import com.example.moviejournal.MainActivity
 import com.example.moviejournal.data.api.MovieApiService
 import com.example.moviejournal.data.local.Movie
-import com.example.moviejournal.navigation.PreferencesScreen
+import com.example.moviejournal.data.repository.WatchlistRepository
+import com.example.moviejournal.ui.screens.MovieDetailScreen
 import com.example.moviejournal.ui.screens.PreferencesScreen
+import com.example.moviejournal.ui.screens.SearchScreen
+import com.example.moviejournal.ui.screens.WatchlistScreen
 import com.example.moviejournal.utils.PreferencesManager
 import com.example.moviejournal.viewmodels.SearchViewModel
 import kotlinx.serialization.json.Json
@@ -42,7 +40,7 @@ fun MovieJournalNavHost(
             val searchViewModel = SearchViewModel(MovieApiService(LocalContext.current))
             SearchScreen(
                 viewModel = searchViewModel,
-                onMovieClick = { movie : Movie ->
+                onMovieClick = { movie: Movie ->
                     navController.navigate(MovieDetailScreen.createRoute(movie))
                 }
             )
@@ -58,7 +56,7 @@ fun MovieJournalNavHost(
         }
 
         composable(
-            route = MovieDetailScreen.routePattern(), // Use the pattern with parameter
+            route = MovieDetailScreen.routePattern(),
             arguments = listOf(navArgument("movie_json") {
                 type = NavType.StringType
             })
@@ -69,7 +67,7 @@ fun MovieJournalNavHost(
 
             val movie = try {
                 json.decodeFromString<Movie>(movieJson)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 throw IllegalStateException("Invalid movie data")
             }
 

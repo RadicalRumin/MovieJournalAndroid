@@ -21,29 +21,28 @@ import com.example.moviejournal.utils.MediaPermissionsHelper.getRequiredPermissi
 import com.example.moviejournal.utils.PreferencesManager
 
 class MainActivity : ComponentActivity() {
-
-
     private lateinit var watchlistRepository: WatchlistRepository
     private lateinit var preferencesManager: PreferencesManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         watchlistRepository = WatchlistRepository(applicationContext)
-        preferencesManager = PreferencesManager(applicationContext) // Initialize here
+        preferencesManager = PreferencesManager(applicationContext)
         enableEdgeToEdge()
         setContent {
             MovieJournalApp(
                 watchlistRepository = watchlistRepository,
                 preferencesManager = preferencesManager,
-                onRequestGallery = { checkMediaPermissions() } // Pass the function down
+                onRequestGallery = { checkMediaPermissions() }
             )
         }
     }
 
 
-    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let { handleSelectedImage(it) }
-    }
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let { handleSelectedImage(it) }
+        }
 
     private val permissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity() {
         if (permissions.all { it.value }) {
             openImagePicker()
         } else {
-            // Check if any permission was denied permanently
             val shouldShowRationale = getRequiredPermissions().any { permission ->
                 !ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
             }
@@ -67,6 +65,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(this)
             .setTitle("Permission Required")
@@ -84,7 +83,6 @@ class MainActivity : ComponentActivity() {
     private fun checkMediaPermissions() {
         val requiredPermissions = getRequiredPermissions()
 
-        // Filter out already granted permissions
         val permissionsToRequest = requiredPermissions.filter { permission ->
             ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
         }.toTypedArray()
@@ -106,16 +104,13 @@ class MainActivity : ComponentActivity() {
 
     private fun handleSelectedImage(uri: Uri) {
         try {
-            // Take persistent URI permission
             contentResolver.takePersistableUriPermission(
                 uri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
 
-            // Save to preferences
             preferencesManager.backgroundImageUri = uri.toString()
 
-            // Immediate feedback
             Toast.makeText(this, "Background updated", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(this, "Failed to set background", Toast.LENGTH_SHORT).show()

@@ -19,7 +19,6 @@ import com.example.moviejournal.ui.components.MovieCard
 fun WatchlistScreen(onMovieClick: (Movie) -> Unit, watchlistRepository: WatchlistRepository) {
     val movies by remember { mutableStateOf(watchlistRepository.getWatchlist()) }
 
-
     if (movies.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),

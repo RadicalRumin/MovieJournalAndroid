@@ -1,8 +1,6 @@
 package com.example.moviejournal.ui.screens
 
 import android.content.res.Configuration
-import androidx.compose.foundation.horizontalScroll
-import com.example.moviejournal.data.repository.WatchlistRepository
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,10 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,14 +29,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.moviejournal.data.local.Movie
+import com.example.moviejournal.data.repository.WatchlistRepository
 import com.example.moviejournal.ui.components.NetworkImage
-import androidx.compose.ui.platform.LocalConfiguration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,14 +52,13 @@ fun MovieDetailScreen(
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     var isOnWatchlist by remember { mutableStateOf(watchlistRepository.isOnWatchlist(movie.id)) }
-    var rating by remember { mutableStateOf(0) }
+    var rating by remember { mutableIntStateOf(0) }
     var notes by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     if (isOnWatchlist) {
         rating = watchlistRepository.getMovie(movie.id)?.rating ?: 0
         notes = watchlistRepository.getMovie(movie.id)?.notes ?: ""
     }
-
 
     if (showDialog) {
         AlertDialog(
@@ -91,13 +87,11 @@ fun MovieDetailScreen(
         }
     ) { paddingValues ->
         if (isLandscape) {
-            // Landscape layout
             Row(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Poster column (30% width)
                 Column(
                     modifier = Modifier
                         .weight(0.3f)
@@ -108,11 +102,10 @@ fun MovieDetailScreen(
                         contentDescription = "Poster for ${movie.title}",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(0.67f) // Slightly smaller in landscape
+                            .aspectRatio(0.67f)
                     )
                 }
 
-                // Content column (70% width)
                 Column(
                     modifier = Modifier
                         .weight(0.7f)
@@ -204,7 +197,6 @@ fun MovieContentSection(
     onSaveReview: () -> Unit
 ) {
     Column {
-        // Title and Release Year
         Text(
             text = movie.title,
             style = MaterialTheme.typography.headlineMedium
@@ -217,7 +209,6 @@ fun MovieContentSection(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Description
         Text(
             text = movie.overview,
             style = MaterialTheme.typography.bodyLarge
@@ -225,7 +216,6 @@ fun MovieContentSection(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Watchlist Button
         Button(
             onClick = onWatchlistToggle,
             modifier = Modifier.fillMaxWidth()
@@ -233,7 +223,6 @@ fun MovieContentSection(
             Text(if (isOnWatchlist) "Remove from Watchlist" else "Add to Watchlist")
         }
 
-        // Rating and Notes (only shown if on watchlist)
         if (isOnWatchlist) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
@@ -241,7 +230,6 @@ fun MovieContentSection(
                 style = MaterialTheme.typography.titleMedium
             )
 
-            // Star rating selector
             Row {
                 for (i in 1..5) {
                     IconButton(onClick = { onRatingChange(i) }) {
@@ -256,7 +244,6 @@ fun MovieContentSection(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Notes field
             Text(
                 text = "Your Notes",
                 style = MaterialTheme.typography.titleMedium
@@ -269,7 +256,6 @@ fun MovieContentSection(
                 maxLines = 5
             )
 
-            // Save button
             Button(
                 onClick = onSaveReview,
                 modifier = Modifier.fillMaxWidth()

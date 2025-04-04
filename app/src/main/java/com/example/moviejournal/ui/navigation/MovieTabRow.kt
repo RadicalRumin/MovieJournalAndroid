@@ -15,7 +15,6 @@ fun MovieTabRow(
     currentScreen: MovieJournalDestination
 ) {
 
-
     NavigationBar {
         allScreens.forEach { screen ->
             NavigationBarItem(
@@ -27,8 +26,7 @@ fun MovieTabRow(
                 },
                 label = { Text(stringResource(screen.titleRes)) },
                 selected = currentScreen == screen,
-                onClick = { onTabSelected(screen) }
-            )
+                onClick = { onTabSelected(screen) })
         }
     }
 }

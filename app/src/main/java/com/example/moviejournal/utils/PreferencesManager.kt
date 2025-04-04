@@ -17,7 +17,7 @@ class PreferencesManager(context: Context) {
                 } else {
                     remove("background_image_uri")
                 }
-                apply() // or commit() if you need synchronous operation
+                commit()
             }
         }
 }
