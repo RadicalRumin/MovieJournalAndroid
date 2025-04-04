@@ -29,7 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.moviejournal.utils.AsyncImage
+import com.example.moviejournal.ui.components.AsyncImage
 import com.example.moviejournal.utils.PreferencesManager
 
 @Composable

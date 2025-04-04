@@ -55,47 +55,5 @@ object ImageLoader {
     }
 }
 
-@Composable
-fun AsyncImage(
-    model: String,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop
-) {
-    val context = LocalContext.current
-    val bitmapState = remember { mutableStateOf<Bitmap?>(null) }
 
-    LaunchedEffect(model) {
-        if (model.isNotEmpty()) {
-            bitmapState.value = withContext(Dispatchers.IO) {
-                try {
-                    loadBitmapFromUri(context, model.toUri())
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    null
-                }
-            }
-        }
-    }
-
-    bitmapState.value?.let { bitmap ->
-        Image(
-            painter = BitmapPainter(bitmap.asImageBitmap()),
-            contentDescription = contentDescription,
-            modifier = modifier,
-            contentScale = contentScale
-        )
-    }
-}
-
-private fun loadBitmapFromUri(context: Context, uri: Uri): Bitmap? {
-    return try {
-        context.contentResolver.openInputStream(uri)?.use { inputStream ->
-            BitmapFactory.decodeStream(inputStream)
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
 

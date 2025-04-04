@@ -2,6 +2,7 @@ package com.example.moviejournal.utils
 
 import android.content.Context
 
+// Example of use of sharedPreferences
 class PreferencesManager(context: Context) {
     private val sharedPreferences = context.getSharedPreferences(
         "app_preferences",

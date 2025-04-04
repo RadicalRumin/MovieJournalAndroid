@@ -1,6 +1,7 @@
 package com.example.moviejournal.ui.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,7 +47,8 @@ fun MovieDetailScreen(
     movie: Movie,
     onBackClick: () -> Unit,
     watchlistRepository: WatchlistRepository,
-    onWatchlistUpdated: () -> Unit = {}
+    onWatchlistUpdated: () -> Unit = {},
+    onSaveImage: (String) -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -54,23 +56,48 @@ fun MovieDetailScreen(
     var isOnWatchlist by remember { mutableStateOf(watchlistRepository.isOnWatchlist(movie.id)) }
     var rating by remember { mutableIntStateOf(0) }
     var notes by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+    var showReviewDialog by remember { mutableStateOf(false) }
+    var showDownloadDialog by remember { mutableStateOf(false) }
+
+
+
     if (isOnWatchlist) {
         rating = watchlistRepository.getMovie(movie.id)?.rating ?: 0
         notes = watchlistRepository.getMovie(movie.id)?.notes ?: ""
     }
 
-    if (showDialog) {
+    if (showReviewDialog) {
         AlertDialog(
             icon = { Icon(Icons.Default.Check, contentDescription = "") },
             title = { Text(text = "Review saved!") },
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { showReviewDialog = false },
             confirmButton = {
                 TextButton(onClick = {
-                    showDialog = false
+                    showReviewDialog = false
                 })
                 { Text("Confirm") }
             },
+        )
+    }
+
+    if (showDownloadDialog) {
+        AlertDialog(
+            onDismissRequest = { showDownloadDialog = false },
+            title = { Text("Save Poster") },
+            text = { Text("Save this movie poster to your device?") },
+            confirmButton = {
+                Button(onClick = {
+                    onSaveImage(movie.fullPosterPath().toString())
+                    showDownloadDialog = false
+                }) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDownloadDialog = false }) {
+                    Text("Cancel")
+                }
+            }
         )
     }
 
@@ -86,6 +113,8 @@ fun MovieDetailScreen(
             )
         }
     ) { paddingValues ->
+
+
         if (isLandscape) {
             Row(
                 modifier = Modifier
@@ -134,7 +163,7 @@ fun MovieDetailScreen(
                                 rating = rating,
                                 notes = notes
                             )
-                            showDialog = true
+                            showReviewDialog = true
                         }
                     )
                 }
@@ -153,6 +182,7 @@ fun MovieDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(2f / 3f)
+                        .clickable { showDownloadDialog = true }
                 )
 
                 MovieContentSection(
@@ -177,7 +207,7 @@ fun MovieDetailScreen(
                             rating = rating,
                             notes = notes
                         )
-                        showDialog = true
+                        showReviewDialog = true
                     }
                 )
             }

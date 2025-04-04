@@ -21,16 +21,17 @@ import com.example.moviejournal.navigation.SearchScreen
 import com.example.moviejournal.navigation.movieTabRowScreens
 import com.example.moviejournal.navigation.navigateSingleTopTo
 import com.example.moviejournal.navigation.shouldShowBottomBar
+import com.example.moviejournal.ui.components.AsyncImage
 import com.example.moviejournal.ui.navigation.MovieTabRow
 import com.example.moviejournal.ui.theme.MovieJournalTheme
-import com.example.moviejournal.utils.AsyncImage
 import com.example.moviejournal.utils.PreferencesManager
 
 @Composable
 fun MovieJournalApp(
     watchlistRepository: WatchlistRepository,
     preferencesManager: PreferencesManager,
-    onRequestGallery: () -> Unit
+    onRequestGallery: () -> Unit,
+    onSaveImage: (String) -> Unit
 ) {
     MovieJournalTheme {
         val navController = rememberNavController()
@@ -75,7 +76,8 @@ fun MovieJournalApp(
                     modifier = Modifier.padding(innerPadding),
                     watchlistRepository = watchlistRepository,
                     preferencesManager = preferencesManager,
-                    onRequestGallery = onRequestGallery
+                    onRequestGallery = onRequestGallery,
+                    onSaveImage = onSaveImage
                 )
             }
         }

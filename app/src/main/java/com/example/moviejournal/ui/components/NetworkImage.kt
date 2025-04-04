@@ -42,7 +42,6 @@ fun NetworkImage(
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var hasError by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     DisposableEffect(url) {
         if (url.isNullOrEmpty()) {

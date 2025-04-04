@@ -27,7 +27,8 @@ fun MovieJournalNavHost(
     watchlistRepository: WatchlistRepository,
     preferencesManager: PreferencesManager,
     modifier: Modifier = Modifier,
-    onRequestGallery: () -> Unit
+    onRequestGallery: () -> Unit,
+    onSaveImage: (String) -> Unit
 ) {
     val json = Json { ignoreUnknownKeys = true }
 
@@ -74,7 +75,8 @@ fun MovieJournalNavHost(
             MovieDetailScreen(
                 movie = movie,
                 onBackClick = { navController.popBackStack() },
-                watchlistRepository = watchlistRepository
+                watchlistRepository = watchlistRepository,
+                onSaveImage = onSaveImage
             )
         }
 
