@@ -1,8 +1,10 @@
 package com.example.moviejournal.data.local
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class Movie(
     val id: Int,
     val title: String,

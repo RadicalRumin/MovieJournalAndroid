@@ -12,13 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.moviejournal.data.local.Movie
 import com.example.moviejournal.ui.components.MovieCard
 import com.example.moviejournal.viewmodels.SearchViewModel
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Movie) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val searchResults by viewModel.movies.collectAsState()
@@ -103,7 +104,7 @@ fun SearchScreen(
                     items(searchResults) { movie ->
                         MovieCard(
                             movie = movie,
-                            onClick = { onMovieClick(movie.id) }
+                            onClick = { onMovieClick(movie) }
                         )
                     }
                 }

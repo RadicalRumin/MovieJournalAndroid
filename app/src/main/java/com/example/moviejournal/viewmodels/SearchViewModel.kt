@@ -1,6 +1,7 @@
 package com.example.moviejournal.viewmodels
 
 import androidx.annotation.RequiresPermission
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviejournal.data.api.MovieApiService
 import com.example.moviejournal.data.local.Movie
@@ -11,11 +12,12 @@ import kotlinx.coroutines.launch
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-class SearchViewModel(private val apiService: MovieApiService) : MovieAppViewModel() {
+class SearchViewModel(private val apiService: MovieApiService) : ViewModel() {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
 
+    val movies: StateFlow<List<Movie>> = _movies.asStateFlow()
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
     val error: StateFlow<String?> = _error.asStateFlow()
 
