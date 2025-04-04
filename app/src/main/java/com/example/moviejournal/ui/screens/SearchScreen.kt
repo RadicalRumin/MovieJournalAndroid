@@ -25,13 +25,14 @@ fun SearchScreen(
     val searchResults by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val minQueryLength = 2
 
     Column(modifier = Modifier.fillMaxSize()) {
         SearchBar(
             query = searchQuery,
             onQueryChange = { newQuery ->
                 searchQuery = newQuery
-                if (newQuery.length > 2) {
+                if (newQuery.length > minQueryLength) {
                     viewModel.searchMovies(newQuery)
                 }
             },
