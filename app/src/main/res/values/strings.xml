@@ -2,4 +2,6 @@
     <string name="app_name">MovieJournal</string>
     <string name="watchlist">Watchlist</string>
     <string name="search">Search</string>
+    <string name="preferencesScreen">PreferencesScreen</string>
+    <string name="movieDetailScreen">MovieDetailScreen</string>
 </resources>

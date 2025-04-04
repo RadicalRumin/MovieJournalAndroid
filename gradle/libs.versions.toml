@@ -12,6 +12,7 @@ activityCompose = "1.10.1"
 composeBom = "2024.09.00"
 lifecycleViemodelCompose = "2.7.0"
 navigationCompose = "2.8.9"
+preferenceKtx = "1.2.1"
 volley = "1.2.1"
 
 [libraries]
@@ -21,6 +22,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

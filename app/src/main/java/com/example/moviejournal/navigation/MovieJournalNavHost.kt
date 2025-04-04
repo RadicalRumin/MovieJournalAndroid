@@ -13,8 +13,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.moviejournal.ui.screens.MovieDetailScreen
 import androidx.navigation.navArgument
+import com.example.moviejournal.MainActivity
 import com.example.moviejournal.data.api.MovieApiService
 import com.example.moviejournal.data.local.Movie
+import com.example.moviejournal.navigation.PreferencesScreen
+import com.example.moviejournal.ui.screens.PreferencesScreen
+import com.example.moviejournal.utils.PreferencesManager
 import com.example.moviejournal.viewmodels.SearchViewModel
 import kotlinx.serialization.json.Json
 
@@ -23,6 +27,7 @@ import kotlinx.serialization.json.Json
 fun MovieJournalNavHost(
     navController: NavHostController,
     watchlistRepository: WatchlistRepository,
+    preferencesManager: PreferencesManager,
     modifier: Modifier = Modifier
 ) {
     val json = Json { ignoreUnknownKeys = true }
@@ -71,6 +76,12 @@ fun MovieJournalNavHost(
                 movie = movie,
                 onBackClick = { navController.popBackStack() },
                 watchlistRepository = watchlistRepository
+            )
+        }
+
+        composable(PreferencesScreen.route) {
+            PreferencesScreen(
+                preferencesManager = preferencesManager
             )
         }
     }

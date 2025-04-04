@@ -15,10 +15,12 @@ import com.example.moviejournal.navigation.navigateSingleTopTo
 import com.example.moviejournal.navigation.shouldShowBottomBar
 import com.example.moviejournal.ui.navigation.MovieTabRow
 import com.example.moviejournal.ui.theme.MovieJournalTheme
+import com.example.moviejournal.utils.PreferencesManager
 
 @Composable
 fun MovieJournalApp(
-    watchlistRepository: WatchlistRepository
+    watchlistRepository: WatchlistRepository,
+    preferencesManager: PreferencesManager
 ) {
     MovieJournalTheme {
         val navController = rememberNavController()
@@ -44,7 +46,8 @@ fun MovieJournalApp(
             MovieJournalNavHost(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
-                watchlistRepository = watchlistRepository
+                watchlistRepository = watchlistRepository,
+                preferencesManager = preferencesManager
             )
         }
     }

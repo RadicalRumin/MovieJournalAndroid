@@ -3,11 +3,12 @@ package com.example.moviejournal.navigation
 import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination
 import com.example.moviejournal.R
 import com.example.moviejournal.data.local.Movie
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
@@ -21,7 +22,7 @@ sealed interface MovieJournalDestination {
 
 data object SearchScreen : MovieJournalDestination {
     override val route = "search"
-    override val icon = Icons.Default.Favorite
+    override val icon = Icons.Default.Search
     override val titleRes = R.string.search
 }
 
@@ -31,17 +32,23 @@ data object Watchlist : MovieJournalDestination {
     override val titleRes = R.string.watchlist
 }
 
+data object PreferencesScreen : MovieJournalDestination {
+    override val route = "preferences"
+    override val icon = Icons.Default.Settings
+    override val titleRes = R.string.preferencesScreen
+}
+
 data object MovieDetailScreen : MovieJournalDestination {
     private val json = Json { ignoreUnknownKeys = true }
     override val route = "movie_route"
     fun routePattern() = "$route/{movie_json}"
     fun createRoute(movie: Movie) = "$route/${Uri.encode(json.encodeToString(movie))}"
     override val icon = Icons.Default.Favorite
-    override val titleRes = R.string.watchlist
+    override val titleRes = R.string.movieDetailScreen
 }
 
 
-val movieTabRowScreens = listOf(SearchScreen, Watchlist)
+val movieTabRowScreens = listOf(SearchScreen, Watchlist, PreferencesScreen)
 
 fun NavDestination.shouldShowBottomBar(): Boolean {
     val route = this.route ?: return true
