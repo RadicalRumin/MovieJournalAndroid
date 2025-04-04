@@ -1,47 +1,139 @@
 package com.example.moviejournal
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.moviejournal.ui.theme.MovieJournalTheme
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import com.example.moviejournal.data.repository.WatchlistRepository
+import com.example.moviejournal.utils.MediaPermissionsHelper
+import com.example.moviejournal.utils.MediaPermissionsHelper.getRequiredPermissions
+import com.example.moviejournal.utils.PreferencesManager
 
 class MainActivity : ComponentActivity() {
+    private lateinit var watchlistRepository: WatchlistRepository
+    private lateinit var preferencesManager: PreferencesManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        watchlistRepository = WatchlistRepository(applicationContext)
+        preferencesManager = PreferencesManager(applicationContext)
         enableEdgeToEdge()
         setContent {
-            MovieJournalTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            MovieJournalApp(
+                watchlistRepository = watchlistRepository,
+                preferencesManager = preferencesManager,
+                onRequestGallery = { checkMediaPermissions() }
+            )
+        }
+    }
+
+
+    private val pickMedia =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let { handleSelectedImage(it) }
+        }
+
+    private val permissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            MediaPermissionsHelper.hasFullMediaAccess(this) -> {
+                openImagePicker()
+            }
+            MediaPermissionsHelper.hasPartialMediaAccess(this) -> {
+            }
+            else -> {
+                val shouldShowRationale = getRequiredPermissions().any { permission ->
+                    !ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+                }
+
+                if (shouldShowRationale) {
+                    showPermissionDeniedDialog()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Permission denied - cannot access media",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Required")
+            .setMessage("You've permanently denied media permissions. Please enable them in app settings.")
+            .setPositiveButton("Open Settings") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = Uri.fromParts("package", packageName, null)
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MovieJournalTheme {
-        Greeting("Android")
+
+    private fun checkMediaPermissions() {
+        when {
+            MediaPermissionsHelper.hasFullMediaAccess(this) -> {
+                openImagePicker()
+            }
+            MediaPermissionsHelper.hasPartialMediaAccess(this) -> {
+                openImagePicker()
+            }
+            else -> {
+                if (MediaPermissionsHelper.shouldShowRationale(this)) {
+                    showPermissionRationale()
+                } else {
+                    permissionsLauncher.launch(getRequiredPermissions())
+                }
+            }
+        }
+    }
+
+    private fun openImagePicker() {
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    private fun handleSelectedImage(uri: Uri) {
+        try {
+            // Try to take persistable permission
+            contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+
+            preferencesManager.backgroundImageUri = uri.toString()
+            Toast.makeText(this, "Background updated", Toast.LENGTH_SHORT).show()
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "Cannot access selected image. Please grant full access.", Toast.LENGTH_SHORT).show()
+            Log.e("MainActivity", "SecurityException when accessing image", e)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to set background", Toast.LENGTH_SHORT).show()
+            Log.e("MainActivity", "Error setting background", e)
+        }
+    }
+
+    private fun showPermissionRationale() {
+        AlertDialog.Builder(this)
+            .setTitle("Media Access Needed")
+            .setMessage("This app needs access to your media to set a background image")
+            .setPositiveButton("Continue") { _, _ ->
+                permissionsLauncher.launch(getRequiredPermissions())
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }
+
+
