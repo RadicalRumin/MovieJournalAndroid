@@ -28,7 +28,8 @@ fun MovieJournalNavHost(
     navController: NavHostController,
     watchlistRepository: WatchlistRepository,
     preferencesManager: PreferencesManager,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRequestGallery: () -> Unit
 ) {
     val json = Json { ignoreUnknownKeys = true }
 
@@ -79,9 +80,11 @@ fun MovieJournalNavHost(
             )
         }
 
-        composable(PreferencesScreen.route) {
+        composable("preferences") {
             PreferencesScreen(
-                preferencesManager = preferencesManager
+                preferencesManager = preferencesManager,
+                onRequestGallery = onRequestGallery,
+                context = LocalContext.current
             )
         }
     }

@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.gson)
     implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.material.icons.extended)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
