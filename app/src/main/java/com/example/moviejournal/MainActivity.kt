@@ -1,7 +1,6 @@
 package com.example.moviejournal
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -14,7 +13,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.moviejournal.data.repository.WatchlistRepository
 import com.example.moviejournal.utils.MediaPermissionsHelper
 import com.example.moviejournal.utils.MediaPermissionsHelper.getRequiredPermissions
@@ -47,21 +45,26 @@ class MainActivity : ComponentActivity() {
     private val permissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        if (permissions.all { it.value }) {
-            openImagePicker()
-        } else {
-            val shouldShowRationale = getRequiredPermissions().any { permission ->
-                !ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+        when {
+            MediaPermissionsHelper.hasFullMediaAccess(this) -> {
+                openImagePicker()
             }
+            MediaPermissionsHelper.hasPartialMediaAccess(this) -> {
+            }
+            else -> {
+                val shouldShowRationale = getRequiredPermissions().any { permission ->
+                    !ActivityCompat.shouldShowRequestPermissionRationale(this, permission)
+                }
 
-            if (shouldShowRationale) {
-                showPermissionDeniedDialog()
-            } else {
-                Toast.makeText(
-                    this,
-                    "Permission denied - cannot access media",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (shouldShowRationale) {
+                    showPermissionDeniedDialog()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Permission denied - cannot access media",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -81,19 +84,19 @@ class MainActivity : ComponentActivity() {
 
 
     private fun checkMediaPermissions() {
-        val requiredPermissions = getRequiredPermissions()
-
-        val permissionsToRequest = requiredPermissions.filter { permission ->
-            ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
-        }.toTypedArray()
-
-        if (permissionsToRequest.isEmpty()) {
-            openImagePicker()
-        } else {
-            if (MediaPermissionsHelper.shouldShowRationale(this)) {
-                showPermissionRationale()
-            } else {
-                permissionsLauncher.launch(permissionsToRequest)
+        when {
+            MediaPermissionsHelper.hasFullMediaAccess(this) -> {
+                openImagePicker()
+            }
+            MediaPermissionsHelper.hasPartialMediaAccess(this) -> {
+                openImagePicker()
+            }
+            else -> {
+                if (MediaPermissionsHelper.shouldShowRationale(this)) {
+                    showPermissionRationale()
+                } else {
+                    permissionsLauncher.launch(getRequiredPermissions())
+                }
             }
         }
     }
@@ -104,14 +107,17 @@ class MainActivity : ComponentActivity() {
 
     private fun handleSelectedImage(uri: Uri) {
         try {
+            // Try to take persistable permission
             contentResolver.takePersistableUriPermission(
                 uri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
 
             preferencesManager.backgroundImageUri = uri.toString()
-
             Toast.makeText(this, "Background updated", Toast.LENGTH_SHORT).show()
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "Cannot access selected image. Please grant full access.", Toast.LENGTH_SHORT).show()
+            Log.e("MainActivity", "SecurityException when accessing image", e)
         } catch (e: Exception) {
             Toast.makeText(this, "Failed to set background", Toast.LENGTH_SHORT).show()
             Log.e("MainActivity", "Error setting background", e)
